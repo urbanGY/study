@@ -1,0 +1,47 @@
+/*
+my quick sort code using java.
+*/
+
+class QuickSort {
+	private int pivot;
+	public QuickSort() {
+		this.pivot = 0;
+	}
+	
+	public void execute(int[] array) {
+		sort(0,array.length-1,array);
+	}
+	
+	public void sort(int start, int end, int[] array) {
+		if(start >= end) return; //When start > end, It will cause null point exception.
+		if(start+1 == end) { //When start+1 == end, According to below while loop, pivot and right always change even though sorted.
+			if(array[start] > array[end]) {// So I write exception case...
+				int temp = array[start];
+				array[start] = array[end];
+				array[end] = temp;
+			}
+			return;
+		}
+		pivot = start;//I chose left pivot sort
+		int left = start+1;
+		int right = end;
+		while(true) {
+			while((array[left] <= array[pivot])&&(left < end))//avoid null point exception
+				left++;
+			while((array[right] >= array[pivot])&&(right > pivot+1))// same reason
+				right--;
+			if(left < right) {
+				int temp = array[left];
+				array[left] = array[right];
+				array[right] = temp;
+			}else {
+				int temp = array[pivot];
+				array[pivot] = array[right];
+				array[right] = temp;
+				break;
+			}
+		}
+		sort(start,right-1,array);
+		sort(right+1,end,array);
+	}
+}
