@@ -1,1 +1,1 @@
-# study
+# study for datastructure and algorythm
