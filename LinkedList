@@ -1,0 +1,71 @@
+/*
+using dummy node, doubly linked list
+*/
+class LinkedList{
+	private Node head;
+	private Node cur;
+	
+	LinkedList(){
+		this.head = new Node(0); //make dummy node
+		this.cur = head;
+	}
+	
+	public void add(int data) {
+		Node temp = cur;
+		cur = new Node(data);
+		temp.setNext(cur);
+		cur.setPrev(temp);
+	}
+	
+	public void remove(int data) {
+		Node temp = head.getNext();
+		while((temp != null) && (temp.getData() != data)) { // if data compare part on front, It occurs null pointer exception.
+			temp = temp.getNext();
+		}
+		if(temp != null) {
+			temp.getPrev().setNext(temp.getNext()); //this is the reason why using doubly linked list
+			temp = null;
+			System.out.println("remove "+data+"!");
+		}else {
+			System.out.println("wrong input..");
+		}
+	}
+	public void showAll() {
+		Node temp = head.getNext();
+		System.out.print("[head]");
+		while(temp != null) {
+			System.out.print("-> ["+temp.getData()+"]");
+			temp = temp.getNext();
+		}
+	}
+}
+
+class Node{
+	private Node next;
+	private Node prev;
+	private int data;
+	public Node(int data) {
+		this.next = null;
+		this.prev = null;
+		this.data = data;
+	}
+	public void setNext(Node node) {
+		this.next = node;
+	}
+	
+	public Node getNext() {
+		return this.next;
+	}
+	
+	public void setPrev(Node node) {
+		this.prev = node;
+	}
+	
+	public Node getPrev() {
+		return this.prev;
+	}
+	
+	public int getData() {
+		return this.data;
+	}
+}
