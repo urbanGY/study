@@ -19,11 +19,11 @@ class LinkedList{
 	
 	public void remove(int data) {
 		Node temp = head.getNext();
-		while((temp != null) && (temp.getData() != data)) { // if data compare part on front, It occurs null pointer exception.
+		while((temp != null) && (temp.getData() != data)) { // If (temp.getData() != data) on front, It occurs null pointer exception.
 			temp = temp.getNext();
 		}
 		if(temp != null) {
-			temp.getPrev().setNext(temp.getNext()); //this is the reason why using doubly linked list
+			temp.getPrev().setNext(temp.getNext()); //This is the reason why using doubly linked list
 			temp = null;
 			System.out.println("remove "+data+"!");
 		}else {
