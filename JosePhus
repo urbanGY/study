@@ -1,0 +1,85 @@
+/*
+using c++, make my own single linked list
+*/
+#include <iostream>
+using namespace std;
+
+class Node{
+private:
+  int num;
+  Node * next;
+public:
+  Node(int num)
+  :num(num)
+  {
+    this->next = NULL;
+  }
+
+  ~Node()
+  {
+
+  }
+
+  void setNext(Node * node){
+    this->next = node;
+  }
+
+  Node * getNext(){
+    return this->next;
+  }
+
+  int getNum(){
+    return this->num;
+  }
+};
+
+class LinkedList{
+private:
+  Node * head;
+  Node * cur;
+  int M;
+public:
+  LinkedList(int N, int M)
+  :M(M)
+  {
+    Node * node = new Node(1);
+    head = node;
+    cur = head;
+    for(int i = 2 ; i <= N ; i++){
+      node = new Node(i);
+      cur->setNext(node);
+      cur = cur->getNext();
+    }
+    cur->setNext(head); //cur is on the last node. This is key point
+  }
+
+  ~LinkedList()
+  {
+
+  }
+
+  int removeNode(){
+    for(int i = 1 ; i < M ; i++) // When M is 1, we have to know the node which is located before the node that should be removed.
+      cur = cur->getNext();
+    int num = cur->getNext()->getNum();
+    Node * temp = cur->getNext();
+    cur->setNext(cur->getNext()->getNext()); // So, cur is always located before the start node.
+    delete temp;
+    return num;
+  }
+
+};
+
+int main(void)
+{
+  int N = 0 , M = 0;
+  scanf("%d %d",&N, &M);
+  LinkedList link(N,M);
+  printf("<%d",link.removeNode()); 
+  for(int i = 2 ; i <= N ; i++){ 
+    if(i == N) printf(", %d",link.removeNode()); //Check the output condition precisely
+    else printf(", %d",link.removeNode());
+  }
+  printf(">");
+  return 0;
+}
