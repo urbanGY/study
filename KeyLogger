@@ -1,0 +1,143 @@
+#include <iostream>
+#include <ctype.h>
+#include <string>
+using namespace std;
+class node
+{
+private:
+  char data;
+  node * next;
+  node * prev;
+public:
+  node(char data)
+  :data(data)
+  {
+    next = NULL;
+    prev = NULL;
+  }
+
+  ~node()
+  {
+
+  }
+
+  void setNext(node * node)
+  {
+    this->next = node;
+  }
+
+  node * getNext()
+  {
+    return this->next;
+  }
+
+  void setPrev(node * node)
+  {
+    this->prev = node;
+  }
+
+  node * getPrev()
+  {
+    return this->prev;
+  }
+
+  char getData()
+  {
+    return this->data;
+  }
+};
+
+class List{
+private:
+  node * head;
+  node * cur;
+public:
+  List()
+  {
+    head = new node(1);
+    cur = head;
+  }
+
+  ~List()
+  {
+
+  }
+
+  void add(char data)
+  {
+    node * temp = new node(data);
+    temp->setPrev(cur);
+    temp->setNext(cur->getNext());
+    if(cur->getNext() != NULL)
+      cur->getNext()->setPrev(temp);
+    cur->setNext(temp);
+    cur = cur->getNext();
+  }
+
+  void moveLeft()
+  {
+    if(cur->getPrev() != NULL)
+      cur = cur->getPrev();
+  }
+
+  void moveRight()
+  {
+    if(cur->getNext() != NULL)
+      cur = cur->getNext();
+  }
+
+  void nodeDelete()
+  {
+    if(cur != head){//consider every case carefully. before write this line, It occurs run time error in specific case(first input == '-').
+      node * temp = cur->getNext();
+      if(cur->getNext() != NULL){
+        cur->getNext()->setPrev(cur->getPrev());
+      }
+      cur = cur->getPrev();
+      delete cur->getNext();
+      cur->setNext(temp);
+    }
+  }
+
+  string getValue()
+  {
+    string answer = "";
+    cur = head->getNext();
+    delete head;
+    while(cur != NULL){
+      answer += cur->getData();
+      head = cur;
+      cur = cur->getNext();
+      delete head;
+    }
+    return answer;
+  }
+};
+string paswd(string s)
+{
+  List list;
+  for(unsigned int i = 0 ; i < s.length() ; i++){
+    if(s[i] == '<'){
+      list.moveLeft();
+    }else if(s[i] == '>'){
+      list.moveRight();
+    }else if(isalnum(s[i]) != 0 || isalpha(s[i]) != 0){
+      list.add(s[i]);
+    }else if(s[i] == '-'){
+      list.nodeDelete();
+    }
+  }
+  return list.getValue();
+}
+
+int main(void)
+{
+    int N;
+    cin >> N;
+    string input[N] = {};
+    for(int i = 0 ; i < N ; i++)
+      cin>>input[i];
+
+    for(int i = 0 ; i < N ; i++)
+      cout<<paswd(input[i])<<endl;
+}
