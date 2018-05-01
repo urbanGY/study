@@ -1,0 +1,30 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+	int N =0;
+	int array[1010] = {};
+	int DP[1010] = {};
+	int max = 0;
+	cin>>N;
+	for(int i = 1 ; i <= N ; i++){
+		cin>>array[i];
+		for(int j = 0 ; j < i ; j++){
+			if(array[j] < array[i]){
+				if(DP[i] < DP[j]+1){
+					DP[i] = DP[j] + 1;
+				}
+			}
+		}
+		if(DP[i] > max)
+			max = DP[i];
+	}
+	cout<<max<<endl;
+	return 0;
+}
+
+/*
+이전 array들 중 현재 값보다 작은 값들이 가지는 증가하는 최대 수열의 값(DP[j])들중 가장 큰 값 +1이 현재 값의 DP가 된다(DP[i]).
+가장 늦게 입력된 값이 가장 큰 증가하는수열의 개수를 가지는게 아니므로 매 입력마다 max와 비교해서 max를 항상 최대의 값으로 유지시킨다.
+1. 모든 이전 배열을 순회해서 현재 값이랑 비교 2. 현재 DP가 max가 아닐 수 
+*/
