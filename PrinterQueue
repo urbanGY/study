@@ -1,3 +1,6 @@
+/*
+1966 question
+*/
 #include <iostream>
 #include <stdlib.h> //using quick sort
 #include <stdio.h>
