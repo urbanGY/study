@@ -1,0 +1,3 @@
+git bash 쓸때 사용자 디렉토리에 .bashrc 파일에 alias 로 내가 원하는 명령어 지정
+ex) alias SsuBS-'cd ~/Desktop/develope/forGit/ReactNative/SsuBs'
+터미널 껏다 키면 명령어 
