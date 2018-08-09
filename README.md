@@ -1,1 +1,1 @@
-# study for datastructure and algorythm
+# every thing..
