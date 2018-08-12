@@ -4,8 +4,10 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -19,12 +21,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     TextView textView;
+    TextView level;
 
     private SpeechRecognizer mSpeechRecognizer;
     private Intent mSpeechRecognizerIntent;
@@ -35,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         checkPermission();
         textView = findViewById(R.id.speechText);
+        level = findViewById(R.id.level);
+
 
         mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         mSpeechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -45,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onReadyForSpeech(Bundle bundle) {
                 Log.d(TAG, "onReadyForSpeech: ");
+                level.setText("start speech...");
             }
 
             @Override
@@ -55,7 +62,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onRmsChanged(float v) {
-                Log.d(TAG, "onRmsChanged: ");
+                Log.d(TAG, "onRmsChanged: "+ v);
+                level.setText("start speech..."+v);
             }
 
             @Override
@@ -80,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "onResults: "+matches.get(0));
                 if(matches != null)
                     textView.setText(matches.get(0));
+                level.setText("default");
+
             }
 
             @Override
