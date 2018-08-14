@@ -1,14 +1,9 @@
 package software.pinetree.blue.ssubs;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.MediaRecorder;
-import android.net.Uri;
 import android.os.Build;
-import android.provider.MediaStore;
-import android.provider.Settings;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -17,11 +12,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.IOException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -29,9 +27,15 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     TextView textView;
     TextView level;
+    TextView key;
+    ImageView imageView;
+    ImageView circle;
+
+    Animation animation;
 
     private SpeechRecognizer mSpeechRecognizer;
     private Intent mSpeechRecognizerIntent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +44,18 @@ public class MainActivity extends AppCompatActivity {
         checkPermission();
         textView = findViewById(R.id.speechText);
         level = findViewById(R.id.level);
+        key = findViewById(R.id.keyWord);
+        imageView = findViewById(R.id.recording);
+        circle = findViewById(R.id.circle);
 
+        animation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.scale);
 
         mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         mSpeechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM );
         mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.KOREAN);
         Log.d(TAG, "onCreate: create intent all");
+
         mSpeechRecognizer.setRecognitionListener(new RecognitionListener() {
             @Override
             public void onReadyForSpeech(Bundle bundle) {
@@ -64,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
             public void onRmsChanged(float v) {
                 Log.d(TAG, "onRmsChanged: "+ v);
                 level.setText("start speech..."+v);
+                if(v > 0.0){
+                    circle.startAnimation(animation);
+                }
             }
 
             @Override
@@ -79,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onError(int i) {
                 Log.d(TAG, "onError: "+ i);
+                textView.setText("error...");
+                level.setText("level");
             }
 
             @Override
@@ -88,8 +102,23 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "onResults: "+matches.get(0));
                 if(matches != null)
                     textView.setText(matches.get(0));
-                level.setText("default");
-
+                level.setText("level");
+                /*
+                loading icon
+                 */
+                /*
+                oepn thread, post masage
+                 */
+                JSONObject json = new JSONObject();
+                String value = "";
+                try {
+                    json.put("text", matches.get(0));
+                    value = json.toString();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                Log.d(TAG, "value: "+value);
+                new ServerCall(key).execute(value);
             }
 
             @Override
@@ -103,25 +132,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.button).setOnTouchListener(new View.OnTouchListener() {
+        imageView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                switch (motionEvent.getAction()) {
-                    case MotionEvent.ACTION_UP:
-                        Log.d(TAG, "onTouch: no click");
-                        mSpeechRecognizer.stopListening();
-                        textView.setHint("you will see the input here");
-                        break;
-                    case MotionEvent.ACTION_DOWN:
-                        Log.d(TAG, "onTouch: click");
-                        textView.setText("");
-                        textView.setHint("Listen...");
-                        mSpeechRecognizer.startListening(mSpeechRecognizerIntent);
-                        break;
-                }
-                return false;
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: click image!");
+                textView.setText("listening...");
+                mSpeechRecognizer.startListening(mSpeechRecognizerIntent);
             }
         });
+
     }
 
     private void checkPermission() {
