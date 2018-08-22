@@ -8,7 +8,6 @@ import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity {
     ImageView category_1;
-    String URL = "http://";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,10 +17,11 @@ public class MainActivity extends AppCompatActivity {
         category_1 = findViewById(R.id.category_1);
         final Intent intent = new Intent(this, RestaurantList.class);
 
+        final String category_num = "1";
         category_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new GetList(getApplicationContext()).execute(URL);
+                new GetList(getApplicationContext()).execute(category_num);
             }
         });
     }
