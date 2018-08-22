@@ -14,29 +14,33 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class GetList extends AsyncTask<String, Void, String> {
-    Context context;
-    final String TAG = "GETLIST";
+    private Context context;
+    private final String TAG = "GETLIST";
+    private String SERVER_URL = "http://";
 
     public GetList(Context context){
         this.context = context;
     }
 
     @Override
-    protected String doInBackground(String... SERVER_URL) {
+    protected String doInBackground(String... category_num) {
+        SERVER_URL += category_num[0];
         String result = "fail";
         try{
-            URL url = new URL(SERVER_URL[0]);
+            URL url = new URL(SERVER_URL);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.setReadTimeout(10000);
             conn.setConnectTimeout(12000);
             conn.setRequestMethod("GET");
             conn.setDoInput(true);
-            conn.setDoOutput(false);
+            conn.setDoOutput(true);
+            conn.setUseCaches(false);
+            conn.connect();
 
             int resCode = conn.getResponseCode();
             Log.d(TAG, "doInBackground: "+resCode);
             InputStream is = conn.getInputStream();
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            BufferedReader br = new BufferedReader(new InputStreamReader(is,"UTF-8"));
             String line;
             StringBuffer response = new StringBuffer();
             while((line = br.readLine()) != null) {
@@ -44,7 +48,7 @@ public class GetList extends AsyncTask<String, Void, String> {
                 response.append('\r');
             }
             br.close();
-            result = response.toString();
+            result = response.toString().trim();
         }catch (Exception e){
             e.printStackTrace();
         }
