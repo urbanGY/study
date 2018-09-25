@@ -3,7 +3,7 @@
 using namespace std;
 void mergesort2(int, int);
 void merge2(int, int, int);
-void showAll(int *, int);
+void showAll();
 int * S;
 int length;
 
@@ -19,7 +19,7 @@ int main() {
 		cin >> S[i];
 	}
 	mergesort2(0, size-1);
-	showAll(S, size);
+	showAll();
 	free(S);
 	return 0;
 }
@@ -64,8 +64,8 @@ void merge2(int low, int mid, int high) {
 	}
 	free(U);
 }
-void showAll(int * array, int end) {
-	for (int i = 0; i < end; i++) {
-		cout << array[i]<<" ";
+void showAll() {
+	for (int i = 0; i < length; i++) {
+		cout << S[i]<<" ";
 	}
 }
