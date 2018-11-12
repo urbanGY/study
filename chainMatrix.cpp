@@ -1,7 +1,11 @@
 #include <iostream>
 #include <string>
 using namespace std;
+int time = 0;
+int ** P;
 int minmult(int, int *, int **);
+void order(int, int);
+
 //6 - 5x2 2x3 3x4 4x6 6x7 7x8
 //12 - 6x2 2x3 3x7 7x5 5x9 9x7 7x2 2x4 4x3 3x9 9x4 4x6
 //18 - 6x5 5x4 4x3 3x2 2x5 5x2 2x5 5x6 6x8 8x3 3x9 9x2 2x5 5x7 7x8 8x4 4x9 9x6
@@ -27,7 +31,7 @@ int main() {
 		}
 		d[i + 1] = atoi(read.c_str());
 	}
-	int ** P = new int *[N + 1];
+	P = new int *[N + 1];
 	for (int i = 0; i <= N; i++) {
 		P[i] = new int[N + 1];
 	}
@@ -44,12 +48,14 @@ int main() {
 		}
 		cout << " " << endl;
 	}
+  cout << "\norder : ";
+  order(1, N);
+  cout << "\ntime : " << time << endl;
 	delete[] d;
 	delete[] P;
 	return 0;
 }
 int minmult(int n, int * d, int ** P) {
-	int count = 0;
 	int ** M = new int *[n + 1];
 	for (int i = 0; i <= n; i++) {
 		M[i] = new int[n + 1];
@@ -62,7 +68,7 @@ int minmult(int n, int * d, int ** P) {
 			int j = i + diagonal;
 			int min = 0;
 			for (int k = i; k < j ; k++) {
-				count++;
+				time++;
 				if (k == i) {
 					min = M[i][k] + M[k + 1][j] + (d[i - 1] * d[k] * d[j]);
 					P[i][j] = k;
@@ -80,6 +86,16 @@ int minmult(int n, int * d, int ** P) {
 	}
 	int answer = M[1][n];
 	delete[] M;	
-	cout << "count : " << count << endl;
 	return answer;
+}
+
+void order(int i, int j) {
+	if (i == j) cout << "A" << i;
+	else {
+		int k = P[i][j];
+		cout << " (";
+		order(i, k);
+		order(k + 1, j);
+		cout << ") ";
+	}
 }
